@@ -80,7 +80,7 @@ namespace piano
             //SendInput((uint)inputs.Length, inputs, Marshal.SizeOf(typeof(Input)));
 
             int tact = Convert.ToInt32(textBoxTact.Text);
-            Thread.Sleep(4000);
+            Thread.Sleep(400);
             string text = textBox1.Text;
 
             for (int i = 0; i < text.Length; i++)
@@ -129,7 +129,7 @@ namespace piano
                                 int dwFlags, // Здесь целочисленный тип нажимается 0, отпускается 2
                                 int dwExtraInfo // Это целочисленный тип. Обычно устанавливается в 0
                 );
-        void PressKey(char key)
+        void PressKey(Keys key)
         {
             //keybd_event((byte)key, 0, 0, 0);
             //Thread.Sleep(1);
@@ -143,9 +143,9 @@ namespace piano
                     {
                         ki = new KeyboardInput
                         {
-                            wVk = 0,
-                            wScan = 0x11,
-                            dwFlags=(uint)(KeyEventF.KeyDown | KeyEventF.Scancode),
+                            wVk = (ushort)key,
+                            //wScan = 0x11,
+                            dwFlags=(uint)(KeyEventF.KeyDown),
                             dwExtraInfo=GetMessageExtraInfo()
                         }
                     }
@@ -157,9 +157,9 @@ namespace piano
                     {
                         ki = new KeyboardInput
                         {
-                            wVk = 0,
-                            wScan = 0x11,
-                            dwFlags=(uint)(KeyEventF.KeyUp | KeyEventF.Scancode),
+                            wVk =(ushort) key,
+                            //wScan = 0x11,
+                            dwFlags=(uint)(KeyEventF.KeyUp ),
                             dwExtraInfo=GetMessageExtraInfo()
                         }
                     }
@@ -177,14 +177,14 @@ namespace piano
 
         void ConvertCharToVirtualKey(char ch)
         {
-            PressKey(ch);
-            //short vkey = VkKeyScan(ch);
-            //Keys retval = (Keys)(vkey & 0xff);
+            short vkey = VkKeyScan(ch);
+            Keys retval = (Keys)(vkey & 0xff);
             //int modifiers = vkey >> 8;
             //if ((modifiers & 1) != 0) { PressHighKey((Keys)retval); return; }
             ////if ((modifiers & 2) != 0) retval |= Keys.Control;
             ////if ((modifiers & 4) != 0) retval |= Keys.Alt;
 
+            PressKey(retval);
             //PressKey(retval);
         }
 
